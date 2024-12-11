@@ -46,9 +46,6 @@ for i in range(len(files) - 1, -1, -1):
     if free_idx >= file_start_idx:
         continue
 
-    for k in range(file_length):
-        blocks[free_idx + k] = blocks[file_start_idx + k]
-        blocks[file_start_idx + k] = "."
     files[i] = (free_idx, file_length)
     free[size].pop(0)
     diff = free_size - file_length
