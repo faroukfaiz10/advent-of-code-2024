@@ -27,7 +27,7 @@ for k in range(10000):
         y = (y + vs[i][1]) % HEIGHT
         ps[i] = [x, y]
 
-    if (k - 87) % 101 == 0:
+    if (k - 87) % WIDTH == 0:
         for i in range(HEIGHT):
             l = ["#" if [j, i] in ps else "." for j in range(WIDTH)]
             print("".join(l))
