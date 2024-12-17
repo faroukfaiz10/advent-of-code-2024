@@ -1,5 +1,5 @@
 import re
-from collections import Counter, defaultdict
+from collections import Counter, defaultdict, deque
 from itertools import zip_longest
 from operator import itemgetter
 from bisect import bisect_left, insort
