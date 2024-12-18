@@ -13,10 +13,15 @@ grid = [["."] * SIZE for _ in range(SIZE)]
 with open("../input.txt") as file:
     lines = file.read().splitlines()
 
+l = 0
+r = len(lines) - 1
 
-for i in range(len(lines)):
-    x, y = lines[i].split(",")
-    grid[int(y)][int(x)] = "#"
+while l < r:
+    m = (l + r) // 2
+    grid = [["."] * SIZE for _ in range(SIZE)]
+    for i in range(m):
+        x, y = lines[i].split(",")
+        grid[int(y)][int(x)] = "#"
     q = [(0, 0)]
     visited = set()
     found = False
@@ -33,6 +38,9 @@ for i in range(len(lines)):
                 continue
             q.append((a, b))
             visited.add((a, b))
-    if not found:
-        print(lines[i])
-        break
+    if not found or l == m:
+        r = m
+    else:
+        l = m
+
+print(lines[l])
