@@ -1,13 +1,7 @@
-import re
-from collections import Counter, defaultdict, deque
-from itertools import zip_longest
-from operator import itemgetter
-from bisect import bisect_left, insort
 from functools import cache
-import math
 
+NUM_ROBOT_DIR_KEYPADS = 26
 DIR_POS = {"<": (0, 0), "v": (0, 1), ">": (0, 2), "^": (1, 1), "A": (1, 2)}
-NUM_ROBOT_DIR_KEYPADS = 2
 
 with open("../input.txt") as file:
     codes = file.read().splitlines()
@@ -26,14 +20,8 @@ def get_key_pos(key, is_num_keypad):
     return (x, y)
 
 
-def get_len_after_depth(seq, depth):
-    for i in range(depth):
-        seq = get_next_seq(seq, depth - i - 1)
-    return len(seq)
-
-
 @cache
-def get_mov_seq(key1, key2, depth_check, is_num_keypad):
+def get_mov_seq(key1, key2, is_num_keypad):
     x1, y1 = get_key_pos(key1, is_num_keypad)
     x2, y2 = get_key_pos(key2, is_num_keypad)
 
@@ -56,20 +44,7 @@ def get_mov_seq(key1, key2, depth_check, is_num_keypad):
     if is_horizontal_invalid:
         return vertical_first
 
-    is_horizontal_optimal = get_len_after_depth(
-        horizontal_first, depth_check
-    ) < get_len_after_depth(vertical_first, depth_check)
-
-    return horizontal_first if is_horizontal_optimal else vertical_first
-
-
-def get_next_seq(code, depth_check, is_num_keypad=False):
-    seq = ""
-    prev_key = "A"
-    for key in code:
-        seq += get_mov_seq(prev_key, key, depth_check, is_num_keypad)
-        prev_key = key
-    return seq
+    return horizontal_first if horizontal.startswith("<") else vertical_first
 
 
 @cache
@@ -77,7 +52,7 @@ def get_key_len_after_depth(prev_key, key, depth):
     if depth == 0:
         return 1
 
-    next_seq = get_mov_seq(prev_key, key, NUM_ROBOT_DIR_KEYPADS, False)
+    next_seq = get_mov_seq(prev_key, key, depth == NUM_ROBOT_DIR_KEYPADS)
     return get_seq_len_after_depth(next_seq, depth - 1)
 
 
@@ -92,7 +67,6 @@ def get_seq_len_after_depth(seq, depth):
 
 ans = 0
 for code in codes:
-    seq = get_next_seq(code, NUM_ROBOT_DIR_KEYPADS, True)
-    ans += get_seq_len_after_depth(seq, NUM_ROBOT_DIR_KEYPADS) * int(code[:-1])
+    ans += get_seq_len_after_depth(code, NUM_ROBOT_DIR_KEYPADS) * int(code[:-1])
 
 print(ans)
